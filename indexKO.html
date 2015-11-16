@@ -13,12 +13,16 @@
     
 <style type="text/css">
   html, body { height: 100%; margin: 0; padding: 0; }
-  #map { height: 100%; }
+  #map-canvas { height: 50%; }
 </style>
 
   </head>
   <body>
-  	<div id='map'> </div>
+  	<div id='map-canvas'> </div>
+
+ <p>First name: <input data-bind="value: firstName" /></p>
+<p>Last name: <input data-bind="value: lastName" /></p>
+<h2>Hello, <span data-bind="text: fullName"> </span>!</h2>
 
      <!-- SCRIPTS-->
       <script async defer
