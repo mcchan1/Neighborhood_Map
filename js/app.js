@@ -1,8 +1,17 @@
 
 // feature. People can enter geographical searches. The search box will return a
 // pick list containing a mix of places and predicted search terms.
+var map;
 
+$(document).ready(function(){
+  ko.applyBindings(new ViewModel());
+  initMap();
+});
 
+function ViewModel(){
+  var self = this;
+  self.inputValue = ko.observable("dog");
+}
 function initMap() {
    NewYorkCity = new google.maps.LatLng(40.7642846,-73.9818741);
   var map = new google.maps.Map(document.getElementById('map'), {
@@ -87,10 +96,4 @@ function initMap() {
   });
   
 };
-
-function ViewModel() {
-  var self = this;
-   self.inputValue = ko.observable("New York City")
- };
- ko.applyBindings(new ViewModel());
 
