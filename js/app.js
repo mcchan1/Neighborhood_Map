@@ -10,7 +10,7 @@ $(document).ready(function(){
 
 function ViewModel(){
   var self = this;
-  self.inputValue = ko.observable("dog");
+  self.inputValue = ko.observable("dog park");
 }
 function initMap() {
    NewYorkCity = new google.maps.LatLng(40.7642846,-73.9818741);
