@@ -1,19 +1,73 @@
 
-// feature. People can enter geographical searches. The search box will return a
-// pick list containing a mix of places and predicted search terms.
-var map;
+//GLOBAL VARIABLES
+var map; 
+
+
+//created jquery function to load knockout.js's ViewModel and initMap
+//before google map api gave console error of no initMap function,couldn't
+//not sure if there is another way to load, as I already tried putting 
+//in different orders. 
 
 $(document).ready(function(){
-  ko.applyBindings(new ViewModel());
+
   initMap();
+  ko.applyBindings(new ViewModel());
+  
+  
 });
 
+//CREATE VIEW MODEL AND 'OBSERVABLES'
 function ViewModel(){
   var self = this;
   self.inputValue = ko.observable("dog park");
+
+
+function loadData(){
+  var $wikiElem = $('wikipedia-links');
+  var inputWiki = $('#pac-input').val();
+
+  //clear out old data before new request
+  $wikiElem.text("");
+
+  //wiki jsonp using ajax request
+  var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='
+  +inputWiki + '&format=json&callback=wikiCallback';
+
+//set timeout method after 8000ms
+
+  var wikiRequestTimeout = setTimeout(function(){
+    $wikiElem.text('fuck your wikipedia');
+  }, 8000);
+
+  //ajax request
+  $.ajax({
+    url: wikiUrl,
+    dataType: "jsonp",
+
+    //success function
+    success: function(wikiResponse){
+      var articleList = wikiResponse[1];
+
+      //loop through results based on map search input & display
+      for(var i=0; i<articleList.length; i++) {
+
+        articleStr = articleList[i];
+        var url = 'https://en.wikipedia.org/wiki/' + articleStr;
+        $wikiElem.append('<li><a href="'+ url +'">'+ articleStr+'</a></li>'+'</br>');
+      };
+
+      //clear the timeout if wiki is successful
+      clearTimeout(wikiRequestTimeout);
+
+    }
+  }); return false; 
+}; //end of loadData function 
+$('pac-input').submit(loadData);
 }
+
+//MAP FUNCTION 
 function initMap() {
-   NewYorkCity = new google.maps.LatLng(40.7642846,-73.9818741);
+  NewYorkCity = new google.maps.LatLng(40.7642846,-73.9818741);
   var map = new google.maps.Map(document.getElementById('map'), {
     center: NewYorkCity,
     zoom: 15,
@@ -95,5 +149,6 @@ function initMap() {
     map.fitBounds(bounds);
   });
   
-};
+}; //END OF initMAP
 
+// LOAD WIKI ARTICLES WITH AJAX

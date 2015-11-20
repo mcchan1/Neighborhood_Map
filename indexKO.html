@@ -6,16 +6,17 @@
     <!--SCRIPTS-->
 
      <script type="text/javascript" src= "https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+
  
-    <title>Nieghborhood Map</title>
+    <title>Neighborhood Map</title>
     <!--CSS -->
     <link href="css/custom.css" rel="stylesheet">
    
   </head>
 
   <body>
-    <input data-bind ="value: inputValue" id="pac-input" class="controls" type="text" placeholder="Search Box">
+    <input data-bind ="value: inputValue, valueUpdate: 'afterkeydown'" id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map"></div>
     
     <ul>
@@ -23,12 +24,16 @@
       <li>add time and weather view</li>
     </ul>
 
-    <p>knockout observe test: <strong data-bind="text: inputValue"></strong></p>
- 
+    <p id="pac-input">knockout observe test: <strong data-bind="text: inputValue"></strong></p>
+     <div class="wikipedia-container">
+        <h3 id="wikipedia-header">Relevant Wikipedia Links</h3>
+        <ul id="wikipedia-links">Type in an address above and find relevant Wikipedia articles here!</ul>
+    </div>
 <!--SCRIPTS-->
- <script type="text/javascript" src="js/app.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBj5c6EQ_6HGWCZ8eL94vl6-ZVh4xPdOq0&libraries=places&callback=initMap" async defer
          ></script>
+ <script type="text/javascript" src="js/app.js"></script>
+ 
     
           
    
