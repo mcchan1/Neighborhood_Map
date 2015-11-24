@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>instagram api </title>
+
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<!--  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBj5c6EQ_6HGWCZ8eL94vl6-ZVh4xPdOq0&libraries=places&callback=initMap" async defer></script> -->
+
+<script src="http://maps.googleapis.com/maps/api/js?v=3&AIzaSyBj5c6EQ_6HGWCZ8eL94vl6-ZVh4xPdOq"></script>
+ 
+ <style> #map-canvas {
+width: full-page; 
+height: 400px;
+} 
+</style>
+</head>
+<body>
+
+   <p>map</p>
+    <div id="map-canvas"></div>
+
+<script>
+jQuery(document).ready(function(){
+	var markers = new Array();
+	
+	function initialize(){
+	var mapOptions = {
+	zoom:3,
+	center: new google.maps.LatLng(40.7,-73.98)
+	};
+	
+	var map = new google.maps.Map(document.getElementById('map-canvas'),mapOptions);
+	
+	for (var i = 0; i< markers.length; i++) {
+		var marker = new google.maps.Marker({
+		position: new google.maps.LatLng(markers[i].location.latitude,
+		markers[i].location.longitude),
+		map: map,
+		animation: google.maps.Animation.DROP
+		});
+		var infowindow = new google.maps.InfoWindow();
+		google.maps.event.addListener(marker, 'mouseover',(function(marker,i){
+			return function(){		
+			infowindow.setContent('<img src="'+markers[i].images.thumbnail.url+'"/>');
+			infowindow.setZIndex(1000);
+			infowindow.open(map,marker);
+			}
+			})(marker,i));
+		}//end of for loop
+	} //end initialize
+			
+			var tag = 'nyc';
+			
+			$.ajax({		
+				url:'https://api.instagram.com/v1/tags/nofilter/media/recent?access_token=1634185146.5b9e1e6.ebf4b224796843379782a86ea0664c24',
+				dataType: 'jsonp',
+				success: function(results){
+				console.log(results);
+				
+				for (var x =0; x < results.data.length; x++){
+				if (results.data[x].caption){
+					var caption = results.data[x].caption.text;
+					}
+					if (results.data[x].location) {
+					markers.push(results.data[x]);
+					}
+					}
+					console.log(markers);
+					initialize();
+					} //close success
+					}); //close ajax
+					}); //close documet ready function
+</script>
+</body>
+</html>

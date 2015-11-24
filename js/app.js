@@ -8,147 +8,145 @@ var map;
 //not sure if there is another way to load, as I already tried putting 
 //in different orders. 
 
-$(document).ready(function(){
+// $(document).ready(function(){
 
-  initMap();
-  ko.applyBindings(new ViewModel());
-  
-  
-});
+//   initMap();
+//   ko.applyBindings(new ViewModel());   
+// });
 
 //CREATE VIEW MODEL AND 'OBSERVABLES'
 function ViewModel(){
   var self = this;
-  self.inputValue = ko.observable("dog park");
+  self.inputValue = ko.observable("new york city");
 
 
-function loadData(){
-  var $wikiElem = $('wikipedia-links');
-  var inputWiki = $('#pac-input').val();
+  function loadData(){
+    var $wikiElem = $('wikipedia-links');
 
-  //clear out old data before new request
-  $wikiElem.text("");
+     //clear out old data before new request
+    $wikiElem.text("");
 
-  //wiki jsonp using ajax request
-  var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='
-  +inputWiki + '&format=json&callback=wikiCallback';
+    var inputWiki = document.getElementById("pac-input").value;//$('#city').val();
 
-//set timeout method after 8000ms
+    //wiki jsonp using ajax request
+    var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search='
+    +inputWiki + '&format=json&callback=wikiCallback';
 
-  var wikiRequestTimeout = setTimeout(function(){
-    $wikiElem.text('fuck your wikipedia');
-  }, 8000);
+  //set timeout method after 8000ms
 
-  //ajax request
-  $.ajax({
-    url: wikiUrl,
-    dataType: "jsonp",
+    var wikiRequestTimeout = setTimeout(function(){
+      $wikiElem.text('fuck your wikipedia');
+    }, 8000);
 
-    //success function
-    success: function(wikiResponse){
-      var articleList = wikiResponse[1];
+    //ajax request
+    $.ajax({
+      url: wikiUrl,
+      dataType: "jsonp",
 
-      //loop through results based on map search input & display
-      for(var i=0; i<articleList.length; i++) {
+      //success function
+      success: function(wikiResponse){
+        var articleList = wikiResponse[1];
 
-        articleStr = articleList[i];
-        var url = 'https://en.wikipedia.org/wiki/' + articleStr;
-        $wikiElem.append('<li><a href="'+ url +'">'+ articleStr+'</a></li>'+'</br>');
-      };
+        //loop through results based on map search input & display
+        for(var i=0; i<articleList.length; i++) {
 
-      //clear the timeout if wiki is successful
-      clearTimeout(wikiRequestTimeout);
+          articleStr = articleList[i];
+          var url = 'https://en.wikipedia.org/wiki/' + articleStr;
+          $wikiElem.append('<li><a href="'+ url +'">'+ articleStr+'</a></li>'+'</br>');
+        };
 
-    }
-  }); return false; 
-}; //end of loadData function 
-$('pac-input').submit(loadData);
-}
+        //clear the timeout if wiki is successful
+        clearTimeout(wikiRequestTimeout);
 
-//MAP FUNCTION 
-function initMap() {
-  NewYorkCity = new google.maps.LatLng(40.7642846,-73.9818741);
-  var map = new google.maps.Map(document.getElementById('map'), {
-    center: NewYorkCity,
-    zoom: 15,
-    mapTypeId: google.maps.MapTypeId.ROADMAP
-  });
-//INFO WINDOW
-  var infowindow = new google.maps.InfoWindow();
-  var service = new google.maps.places.PlacesService(map);
+      }
+    }); return false; 
+  }; //end of loadData function 
+  $('#form-container').submit(loadData);
+  };
 
-  service.getDetails({
-    placeId: 'ChIJe_T71flYwokRGGZTwkP_vL8'
-  }, function(place, status) {
-    if (status === google.maps.places.PlacesServiceStatus.OK) {
-      var marker = new google.maps.Marker({
-        map: map,
-        position: place.geometry.location
-      });
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(place.name);
-        infowindow.open(map, this);
-      });
-    }
-  });
-  
-  // Create the search box and link it to the UI element.
-  var input = document.getElementById('pac-input');
-  var searchBox = new google.maps.places.SearchBox(input);
-  map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-  // Bias the SearchBox results towards current map's viewport.
-  map.addListener('bounds_changed', function() {
-    searchBox.setBounds(map.getBounds());
-  });
-  
-
-  var markers = [];
-  // [START region_getplaces]
-  // Listen for the event fired when the user selects a prediction and retrieve
-  // more details for that place.
-  searchBox.addListener('places_changed', function() {
-    var places = searchBox.getPlaces();
-
-    if (places.length == 0) {
-      return;
-    }
-
-    // Clear out the old markers.
-    markers.forEach(function(marker) {
-      marker.setMap(null);
+  //MAP FUNCTION 
+  function initMap() {
+    NewYorkCity = new google.maps.LatLng(40.7642846,-73.9818741);
+    var map = new google.maps.Map(document.getElementById('map'), {
+      center: NewYorkCity,
+      zoom: 15,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
     });
-    markers = [];
+  //INFO WINDOW
+    var infowindow = new google.maps.InfoWindow();
+    var service = new google.maps.places.PlacesService(map);
 
-    // For each place, get the icon, name and location.
-    var bounds = new google.maps.LatLngBounds();
-    places.forEach(function(place) {
-      var icon = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
-      };
-
-      // Create a marker for each place.
-      markers.push(new google.maps.Marker({
-        map: map,
-        icon: icon,
-        title: place.name,
-        position: place.geometry.location
-      }));
-
-      if (place.geometry.viewport) {
-        // Only geocodes have viewport.
-        bounds.union(place.geometry.viewport);
-      } else {
-        bounds.extend(place.geometry.location);
+    service.getDetails({
+      placeId: 'ChIJe_T71flYwokRGGZTwkP_vL8'
+    }, function(place, status) {
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        var marker = new google.maps.Marker({
+          map: map,
+          position: place.geometry.location
+        });
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(place.name);
+          infowindow.open(map, this);
+        });
       }
     });
-    map.fitBounds(bounds);
-  });
-  
-}; //END OF initMAP
+    
+    // Create the search box and link it to the UI element.
+    var input = document.getElementById('pac-input');
+    var searchBox = new google.maps.places.SearchBox(input);
+    map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
 
-// LOAD WIKI ARTICLES WITH AJAX
+    // Bias the SearchBox results towards current map's viewport.
+    map.addListener('bounds_changed', function() {
+      searchBox.setBounds(map.getBounds());
+    });
+    
+
+    var markers = [];
+    // [START region_getplaces]
+    // Listen for the event fired when the user selects a prediction and retrieve
+    // more details for that place.
+    searchBox.addListener('places_changed', function() {
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+
+      // Clear out the old markers.
+      markers.forEach(function(marker) {
+        marker.setMap(null);
+      });
+      markers = [];
+
+      // For each place, get the icon, name and location.
+      var bounds = new google.maps.LatLngBounds();
+      places.forEach(function(place) {
+        var icon = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25)
+        };
+
+        // Create a marker for each place.
+        markers.push(new google.maps.Marker({
+          map: map,
+          icon: icon,
+          title: place.name,
+          position: place.geometry.location
+        }));
+
+        if (place.geometry.viewport) {
+          // Only geocodes have viewport.
+          bounds.union(place.geometry.viewport);
+        } else {
+          bounds.extend(place.geometry.location);
+        }
+      });
+      map.fitBounds(bounds);
+    });
+    
+  }; //END OF initMAP
+ko.applyBindings(new ViewModel());

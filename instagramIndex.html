@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>instagram api </title>
+
+ <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+ 
+<script type="text/javascript" src= "https://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min.js"></script> 
+ <style> .popular 
+ {display: inline-block;}</style>
+</head>
+<body>
+<h1>popular pictures</h1>
+<ul class = "popular"></ul>
+<h1>elaine's instagram</h1>
+<ul class = "elaine"></ul>
+
+<script>
+// used the access token from random code pen and it works   806401368.5aa13be.4a08df065cbb41469c9cc20041432d3b
+
+// Originally tried to generate acess token using local host, but it didn't take http://localhost/#access_token=1634185146.a2df908.f0a32764c5eb4351a09b94b3df3d0e8d
+
+//I used this site to generate my access token www.pinceladasdaweb.com.br that actually works 
+//User Id: 1634185146
+//1634185146.5b9e1e6.ebf4b224796843379782a86ea0664c24
+//madame_chan user id 1161044655
+//**************************************************
+
+var accessToken = '1634185146.5b9e1e6.ebf4b224796843379782a86ea0664c24';
+
+var madameChan = '1161044655';
+
+    $.ajax({
+      type: "GET",
+      dataType: "jsonp",
+      cache: false,
+      url: "https://api.instagram.com/v1/media/popular?access_token="+ accessToken,
+success: function(data) {
+    for (var i = 0; i < 6; i++) {
+      $(".popular").append("<li><a target='_blank' href='" + data.data[i].link + "'><img src='" + data.data[i].images.low_resolution.url +"'></img></a></li>");
+    }
+  }
+});
+
+// $.ajax({
+//   type: "GET",
+//   dataType: "jsonp",
+//   url: "https://api.instagram.com/v1/users/1161044655/?access_token="+accessToken,
+//   success: function(data) {
+//     $('.name').text(data.data.username);
+//     $('.tagline').text(data.data.bio);
+//   }
+// });
+
+$.ajax({
+  type: "GET",
+  dataType: "jsonp",
+  cache: false,
+  url: "https://api.instagram.com/v1/users/1161044655/media/recent/?access_token="+accessToken,
+  success: function(data) {
+    for (var i = 0; i < 6; i++) {
+    $(".elaine").append("<li><a target='_blank' href='" + data.data[i].link +"'><img   src='" + data.data[i].images.low_resolution.url +"'></img></a></li>");
+    }
+  }
+});
+</script>
+
+</body>
+</html>
+
+

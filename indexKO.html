@@ -19,16 +19,30 @@
     <input data-bind ="value: inputValue, valueUpdate: 'afterkeydown'" id="pac-input" class="controls" type="text" placeholder="Search Box">
     <div id="map"></div>
     
-    <ul>
-      <li>add list view of place markers</li>
-      <li>add time and weather view</li>
-    </ul>
+   <form id="form-container" class="form-container">
+        <label> type here</label> <input data-bind ="value: inputValue, valueUpdate: 'afterkeydown'">
 
-    <p id="pac-input">knockout observe test: <strong data-bind="text: inputValue"></strong></p>
-     <div class="wikipedia-container">
+        <label for="city">City: </label><input data-bind ="value: inputValue, valueUpdate: 'afterkeydown'" type="text" id="city" value="">
+
+        <button id="submit-btn">Submit</button>
+    </form>
+
+
+    <div class="wikipedia-container">
         <h3 id="wikipedia-header">Relevant Wikipedia Links</h3>
         <ul id="wikipedia-links">Type in an address above and find relevant Wikipedia articles here!</ul>
     </div>
+
+  <div class = "container">
+    <div class = "places-list" data-bind="visible: listVisible">
+      <button class="close" data-bind="click: hideList">Close</button>
+      <button class="reset" data-bind="click: reset">Reset</button>
+      <ul data-bind="foreach: markerSearchResults">
+        <li data-bind="text: title, click: $parent.setCurrentLocation"></li>
+      </ul>>
+    </div>
+  </div>
+  
 <!--SCRIPTS-->
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBj5c6EQ_6HGWCZ8eL94vl6-ZVh4xPdOq0&libraries=places&callback=initMap" async defer
          ></script>
